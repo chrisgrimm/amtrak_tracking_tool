@@ -29,8 +29,13 @@ def strip_ansi_color_codes(text):
     return ansi_escape.sub('', text)
 
 def get_latlon():
-    soup = BeautifulSoup(requests.get('http://ip-api.com').text)
-    body_text = soup.select('body')[0].text.strip()
+    text = requests.get('http://ip-api.com').text
+    soup = BeautifulSoup(text)
+    try:
+        body_text = soup.select('body')[0].text.strip()
+    except IndexError:
+        # sometimes the body tags dont show up... weird
+        body_text = text.strip()
     body_text = body_text.strip("'<>() ").replace('\'', '\"')
 
     json_resp = json.loads(strip_ansi_color_codes(body_text))
