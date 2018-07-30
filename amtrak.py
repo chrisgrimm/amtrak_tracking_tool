@@ -11,15 +11,15 @@ import os
 from selenium import webdriver
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions
-from selenium.webdriver.support.expected_conditions import NoAlertPresentException
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import TimeoutException
-from math import cos, asin, sqrt
 import demjson
 import datetime
 import sys
 base_path = os.path.split(os.path.realpath(__file__))[0]
 
+#class ErrorReporter(object):
+#    def __init__(self):
 
 import warnings
 warnings.filterwarnings("ignore", category=UserWarning, module='bs4')
@@ -71,7 +71,6 @@ def get_amtrak_city_info():
     return city_info
 
 def collect_static_city_files(city_links):
-    base_url = 'https://en.wikipedia.org/'
     driver = webdriver.Chrome(executable_path='./chromedriver 4')
     for city_link in city_links:
         driver.get(city_link)
@@ -223,6 +222,10 @@ def scan_until_balanced(string, starting_pos, left_symbol, right_symbol):
 
 if __name__ == '__main__':
     train_number = int(sys.argv[1].strip())
+    try:
+        station_code = sys.argv[2].strip()
+    except IndexError:
+        (city_name, city_link, station_code, lat, lon), _ = compute_closest_city()
     pp = pprint.PrettyPrinter(indent=4)
-    (city_name, city_link, station_code, lat, lon), _ = compute_closest_city()
     pp.pprint(request_amtrak_information(station_code, train_number))
+
